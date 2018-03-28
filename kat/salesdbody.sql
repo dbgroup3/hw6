@@ -24,4 +24,5 @@ is
         dbms_output.put_line('Err: ' || id || ' not found!');
         return null;
   end;
+end salesdb_kat;
 /
