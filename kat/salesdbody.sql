@@ -26,16 +26,16 @@ is
   end;
   procedure profit_breakdown(spid sale.salpers_id%type)
   is
-    cursor indv_sale (s_id float)
+    cursor indv_sale (s_id sale.salpers_id%type)
   is
   select
-    (p.price - p.cost)*tmp.qty*tmp.comm/100 as Profit from
+    (p.price - p.cost)*tmp.qty*tmp.comm/100 from
       (select s.prod_id,  s.qty, s.sale_id, sp.salpers_id, sp.comm from sale s
         join salesperson sp on
         s.salpers_id = sp.salpers_id
         where sp.salpers_id = s_id) tmp
-    join product p on
-  p.prod_id = tmp.prod_id;
+        join product p on
+        p.prod_id = tmp.prod_id;
 
     profit float;
     sname salesperson.salpers_name%type;
