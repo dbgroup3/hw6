@@ -28,7 +28,7 @@ is
   is
     cursor indv_sale (s_id sale.salpers_id%type)
   is
-  select
+  select tmp.sale_id,
     (p.price - p.cost)*tmp.qty*tmp.comm/100 from
       (select s.prod_id,  s.qty, s.sale_id, sp.salpers_id, sp.comm from sale s
         join salesperson sp on
@@ -38,6 +38,7 @@ is
         p.prod_id = tmp.prod_id;
 
     profit float;
+    sale_code sale.sale_id%type;
     sname salesperson.salpers_name%type;
 
     begin
@@ -46,12 +47,12 @@ is
       from salesperson sp
       where sp.salpers_id = spid;
       dbms_output.put_line('Salesperson: ' || sname);
-      dbms_output.put_line('Sales: ');
+      dbms_output.put_line('Profits by Sale: ');
       open indv_sale(spid);
       loop
-        fetch indv_sale into profit;
+        fetch indv_sale into sale_code, profit;
         exit when indv_sale%notfound;
-        dbms_output.put('--> '|| profit);
+        dbms_output.put_line( sale_code || ' --> '|| profit);
       end loop;
       close indv_sale;
 
