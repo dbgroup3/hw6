@@ -1,6 +1,6 @@
 create or replace package body salesdb_kat
 is
-  function sp_tot_profit(salpers_id salesperson.salpers_id%type)
+  function sp_tot_profit(salpers_id_f salesperson.salpers_id%type)
     return float
   is
     profit float;
@@ -14,14 +14,14 @@ is
             (select s.prod_id,  s.qty, s.sale_id, sp.salpers_id, sp.comm from sale s
               join salesperson sp on
               s.salpers_id = sp.salpers_id
-              where sp.salpers_id = salpers_id) tmp
+              where sp.salpers_id = salpers_id_f) tmp
           join product p on
         p.prod_id = tmp.prod_id) f
     );
     return profit;
   exception
       when no_data_found then
-        dbms_output.put_line('Err: ' || id || ' not found!');
+        dbms_output.put_line('Err: ' || salpers_id_f || ' not found!');
         return null;
   end;
 end salesdb_kat;
