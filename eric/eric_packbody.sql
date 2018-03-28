@@ -4,7 +4,7 @@ is
 	is
 		cursor tran_c (sid sale.sale_id%type) 
 		is
-			select s.sale_id, s.prod_id, s.qty, p.price
+			select s.sale_id, s.prod_id, s.qty, p.price, (cast(s.qty as decimal(7,2))*cast(p.price as decimal(7,2))) as total
 			from sale s, product p
 			where s.cust_id = c_id
 			and s.prod_id = p.prod_id;
@@ -13,6 +13,7 @@ is
 	pid sale.prod_id%type;
 	qty sale.qty%type;
 	prc product.price%type;
+	ttl decimal(7,2);
 	cname customer.cust_name%type;
 	counter binary_integer := 0;
 
@@ -28,11 +29,11 @@ is
 		dbms_output.put_line('Transactions:');
 		open tran_c(sid);
 		loop
-			fetch tran_c into sid, pid, qty, prc;
+			fetch tran_c into sid, pid, qty, prc, ttl;
 			exit when tran_c%notfound;
 			counter := counter + 1;
 			dbms_output.put('sale ' || sid || ': ');
-			dbms_output.put_line('x' || qty || ' of prod #' || pid || ' @$' || prc);
+			dbms_output.put_line('x' || qty || ' of prod #' || pid || ' @$' || prc || ' = $' || ttl);
 		end loop;
 		close tran_c;
 		if counter = 0 then
