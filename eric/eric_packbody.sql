@@ -14,6 +14,7 @@ is
 	qty sale.qty%type;
 	prc product.price%type;
 	ttl decimal(7,2);
+	net decimal(7,2) := 0;
 	cname customer.cust_name%type;
 	counter binary_integer := 0;
 
@@ -30,15 +31,17 @@ is
 		open tran_c(sid);
 		loop
 			fetch tran_c into sid, pid, qty, prc, ttl;
+			net := net + ttl;
 			exit when tran_c%notfound;
 			counter := counter + 1;
-			dbms_output.put('sale ' || sid || ': ');
-			dbms_output.put_line('x' || qty || ' of prod #' || pid || ' @$' || prc || ' = $' || ttl);
+			dbms_output.put('sale ' || sid || '| ');
+			dbms_output.put_line('prod #' || pid || ': $' || prc || ' x' || qty || ' units = $' || ttl);
 		end loop;
 		close tran_c;
 		if counter = 0 then
 			raise nothing;
 		end if;
+		dbms_output.put_line('Total cost: $' || net);
 
 	exception
 		when nothing then
