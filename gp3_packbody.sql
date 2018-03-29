@@ -1,5 +1,37 @@
 create or replace package body gp3_pack
 is
+	function getcustname(id customer.cust_id%type)
+   	return customer.cust_name%type
+  	is
+   	name customer.cust_name%type; 
+  	begin
+    	select cust_name
+    	into name
+    	from customer
+    	where cust_id = id; 
+    	return name; 
+  	exception
+    	when no_data_found then
+      	dbms_output.put_line('getcustname error: ' || id || ' not found');
+      	return null;
+	end;
+
+	function getspname(id salesperson.salpers_id%type)
+   	return salesperson.salpers_name%type
+  	is
+   	name salesperson.salpers_name%type; 
+  	begin
+    	select salpers_name
+    	into name
+    	from salesperson
+    	where salpers_id = id; 
+    	return name; 
+  	exception
+    	when no_data_found then
+      	dbms_output.put_line('getspname error: ' || id || ' not found');
+      	return null;
+	end;
+
 	procedure getcustlist (sid salesperson.salpers_id%type)
 	is
 		cursor cust_c (id salesperson.salpers_id%type)
